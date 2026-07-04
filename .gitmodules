@@ -3,4 +3,4 @@
 	url = git@github.com:YJMSTR/mtwiki.git
 [submodule "skills/perf-report-skill"]
 	path = skills/perf-report-skill
-	url = ../perf-report-skill
+	url = git@github.com:YJMSTR/perf-report-skill.git
