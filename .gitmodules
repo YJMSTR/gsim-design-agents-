@@ -1,0 +1,6 @@
+[submodule "skills/mtwiki"]
+	path = skills/mtwiki
+	url = git@github.com:YJMSTR/mtwiki.git
+[submodule "skills/perf-report-skill"]
+	path = skills/perf-report-skill
+	url = ../perf-report-skill

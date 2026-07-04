@@ -1,0 +1,15 @@
+# Generated task artifacts
+runs/
+outputs/
+profile/
+*.log
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+
+# Local editor state
+.vscode/
+.idea/
+.DS_Store

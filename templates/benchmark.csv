@@ -1,0 +1,1 @@
+candidate,date,design,threads,compiler,flags,sim_time_ms,speedup_vs_parent,speedup_vs_1t,verilator_32t_ratio,cpu_util_pct,ipc,cache_miss_rate,sync_overhead_pct,status,notes
