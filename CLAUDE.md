@@ -26,4 +26,4 @@ This repository is the reusable workflow reference for the GSim multi-threading 
 
 ## Promotion rule
 
-A candidate is promotable only if it preserves bit-for-bit simulator correctness and improves the declared target metric under the declared thread count. Rejected candidates must stay recorded with their measured failure reason.
+A candidate is promotable only if it preserves bit-for-bit simulator correctness and improves the declared target metric under the declared thread count. Measurements follow the protocol in `docs/agent-flow.md`: pinned, same-session, interleaved A/Bs, attribution via duty instrumentation, and wall time reported against the computed floor bound. Rejected candidates must stay recorded with their measured failure reason.

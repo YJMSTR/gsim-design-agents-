@@ -34,6 +34,17 @@ Each task must state:
 - Promotion criteria.
 - Rollback/rejection criteria.
 
+## Measurement protocol
+
+Rules earned from rejected candidates and retracted claims. Follow them exactly; a violated protocol voids the measurement.
+
+- Timing A/Bs are same-session, alternating-interleaved, and pinned with `GSIM_MT_CPU_AFFINITY=auto`. Unpinned dense runs at 8+ workers have a bistable 2-3x slow mode from migration churn. Machine load drifts absolute numbers 50%+ within a day; never compare numbers across sessions.
+- Attribution uses `GSIM_MT_DENSE_DUTY` (per-lane padded counters, cycle granularity, ~0.6% distortion). `GSIM_MT_PROFILE` is observer-dominated (~19x distortion at T32) and its numbers are unusable for budget arithmetic; the v470 "4.6% headroom" claim was retracted because it relied on them.
+- Report every candidate as wall time vs the computed floor bound, not just wall deltas. The bound comes from a latency-augmented recurrence (PEG dump + `mcr`) with measured token costs (same-CCD ~24.5ns, cross-CCD ~290ns).
+- Compute the offline ceiling before implementing a scheduler change. Example: a KL partition on the traffic matrix showed CCD relabeling ceiling ~1.5%, so the 1.5h gen+build probe was skipped. When the data exists, offline analysis beats probes.
+- A component's CPU share is not wall relevance. The lookahead tail scan is 40% of CPU but wall-neutral when elided 17% because it runs in stall slack. Always A/B before believing a profile share.
+- Probe hygiene: experimental changes sit behind default-off knobs; rejected probes are reverted from the tree; every rejection is recorded in `candidates.jsonl` with its numbers.
+
 ## Evidence records
 
 Use these files in the task workspace:
