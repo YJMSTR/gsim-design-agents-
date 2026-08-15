@@ -27,7 +27,7 @@ This repository mirrors the Kernel Design Agents structure, but changes the opti
 ## Quick start
 
 ```bash
-cd /home/zhangyangjie/test/gsim-design-agents
+cd gsim-design-agents
 python3 scripts/init-task-workspace.py --workspace /path/to/isolated/gsim-task
 ```
 
@@ -35,11 +35,11 @@ Then start an agent session in the task workspace and give it `prompts/basic-flo
 
 ## Non-interference rule
 
-Do not run commands in `/home/zhangyangjie/test/gsim` unless the active task explicitly owns that workspace. Existing optimization runs, including the current `omp` process, are treated as external work.
+Do not run commands in the sibling `../gsim` checkout unless the active task explicitly owns that workspace. Existing optimization runs, including the current `omp` process, are treated as external work.
 
 ## Handoff from the existing GSim worktree
 
-The current optimization worktree is `/home/zhangyangjie/test/.worktrees/gsim-mt/gsim`. New agents should not mutate it during workflow setup. Use `docs/gsim-worktree-handoff.md` as the orientation checklist before starting a candidate.
+The current optimization worktree is `../.worktrees/gsim-mt/gsim` (relative to this repo). New agents should not mutate it during workflow setup. Use `docs/gsim-worktree-handoff.md` as the orientation checklist before starting a candidate.
 
 Recommended safe path:
 
