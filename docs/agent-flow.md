@@ -60,7 +60,7 @@ Use these files in the task workspace:
 
 ## Non-interference policy
 
-Existing agent attempts under `/home/zhangyangjie/test`, especially the current `omp` run, are external state. This repository does not kill processes, reuse active run directories, or mutate an implementation workspace without an explicit task contract naming it.
+Existing agent attempts in the surrounding workspace (sibling directories of this repository), especially any active `omp` run, are external state. This repository does not kill processes, reuse active run directories, or mutate an implementation workspace without an explicit task contract naming it.
 
 ## Existing-worktree handoff
 

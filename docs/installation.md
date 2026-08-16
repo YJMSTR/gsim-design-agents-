@@ -19,14 +19,13 @@ For user-level installation:
 
 ```bash
 mkdir -p ~/.claude/skills
-ln -s /home/zhangyangjie/test/gsim-design-agents/skills/perf-report-skill ~/.claude/skills/perf-report-skill
-ln -s /home/zhangyangjie/test/gsim-design-agents/skills/mtwiki ~/.claude/skills/mtwiki
+ln -s "$(pwd)/skills/perf-report-skill" ~/.claude/skills/perf-report-skill
+ln -s "$(pwd)/skills/mtwiki" ~/.claude/skills/mtwiki
 ```
 
 ## Initialize a task workspace
 
 ```bash
-python3 scripts/init-task-workspace.py --workspace /home/zhangyangjie/test/gsim-mt-task-001
+python3 scripts/init-task-workspace.py --workspace ../gsim-mt-task-001
 ```
-
-Do not use `/home/zhangyangjie/test/.worktrees/gsim-mt/gsim` as a scratch workspace while existing runs are active.
+Relative workspace paths are resolved by the script. Do not use `../.worktrees/gsim-mt/gsim` (the existing GSim worktree) as a scratch workspace while existing runs are active.

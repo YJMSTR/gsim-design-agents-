@@ -4,9 +4,9 @@ This note is the bridge from earlier ad-hoc agent optimization attempts to the n
 
 ## Existing workspace
 
-- Existing worktree: `/home/zhangyangjie/test/.worktrees/gsim-mt/gsim`
+- Existing worktree: `../.worktrees/gsim-mt/gsim` (relative to this repository; `<workspace>/.worktrees/gsim-mt/gsim` where `<workspace>` is the directory containing this repository)
 - Treat it as active user/agent state. Do not kill processes, clean builds, delete outputs, or run long builds there during workflow setup.
-- The user reported an active `omp` process under `/home/zhangyangjie/test`; avoid actions that compete for or invalidate that run.
+- The user reported an active `omp` process in that workspace; avoid actions that compete for or invalidate that run.
 
 ## Repository shape observed
 

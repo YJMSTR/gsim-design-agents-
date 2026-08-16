@@ -9,7 +9,7 @@ This repository is the reusable workflow reference for the GSim multi-threading 
 - Put generated outputs in `runs/`, `outputs/`, or `profile/`; these paths are ignored by git.
 - Treat `skills/mtwiki` as read-mostly domain knowledge. Update it only when adding reusable RTL simulation knowledge.
 - Treat `skills/perf-report-skill` as the profiling-method skill. Update it when the profiling workflow or diagnosis rules change.
-- Never touch `/home/zhangyangjie/test/gsim` from this repository's maintenance tasks. Use a separate implementation workspace.
+- Never touch the sibling GSim checkout (`../gsim` relative to this repository) from this repository's maintenance tasks. Use a separate implementation workspace.
 
 ## Expected agent workflow
 
