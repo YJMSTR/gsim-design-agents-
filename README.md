@@ -15,13 +15,10 @@ This repository mirrors the Kernel Design Agents structure, but changes the opti
 
 | Path | Purpose |
 |---|---|
+| `docs/spec-measurement-protocol.md` | Normative measurement contracts (sessions, instruments, probe hygiene). |
+| `docs/spec-evidence-records.md` | Normative evidence schemas, outcome vocabulary, artifact identity; enforced by `scripts/check-evidence.py`. |
+| `docs/rationales/` | WHY behind the specs: the incident behind each rule. |
 | `docs/agent-flow.md` | Minimal end-to-end workflow for the GSim optimization loop. |
-| `docs/task-contract.md` | Filled contract for the current long-running GSim task. |
-| `docs/rtl-diagnosis-playbook.md` | Pattern -> cause -> fix handbook for multi-threaded RTL simulator performance. |
-| `prompts/basic-flow.md` | Starter prompt for an implementation agent working in a separate GSim workspace. |
-| `skills/mtwiki` | Domain knowledge subrepository, analogous to KernelWiki. |
-| `skills/perf-report-skill` | Profiling skill subrepository, analogous to `ncu-report-skill`. |
-| `templates/` | Task, benchmark, candidate, and profile report templates. |
 | `scripts/` | Lightweight helpers for workspace bootstrapping and evidence checks. |
 
 ## Quick start

@@ -27,9 +27,25 @@ def main() -> int:
     copy_if_missing(ROOT / 'templates' / 'task-contract.md', workspace / 'docs' / 'task-contract.md')
     copy_if_missing(ROOT / 'templates' / 'benchmark.csv', workspace / 'benchmark.csv')
     copy_if_missing(ROOT / 'templates' / 'candidates.jsonl', workspace / 'candidates.jsonl')
+    draft = workspace / 'docs' / 'draft.md'
+    if not draft.exists():
+        draft.write_text('# Plan Draft\n\n(filled by the implementation agent)\n',
+                         encoding='utf-8')
+    plan = workspace / 'docs' / 'plan.md'
+    if not plan.exists():
+        plan.write_text('# Implementation Plan\n\n(converted from docs/draft.md)\n',
+                        encoding='utf-8')
     print(f'initialized {workspace}')
     print('next: fill docs/task-contract.md, then start from prompts/basic-flow.md')
     return 0
+    draft = workspace / 'docs' / 'draft.md'
+    if not draft.exists():
+        draft.write_text('# Plan Draft\n\n(filled by the implementation agent)\n',
+                         encoding='utf-8')
+    plan = workspace / 'docs' / 'plan.md'
+    if not plan.exists():
+        plan.write_text('# Implementation Plan\n\n(converted from docs/draft.md)\n',
+                        encoding='utf-8')
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ You are working in a GSim task implementation workspace. Your job is to produce 
 8. Run validation after each meaningful candidate.
 9. Run evaluation and profiling for any candidate that passes validation.
 10. Use `skills/perf-report-skill` to diagnose the dominant bottleneck.
-11. Record candidate results, parent relationships, profiler evidence, and the promotion/rejection decision.
+11. Record candidate results, parent relationships, profiler evidence, and the promotion/rejection decision using the outcome vocabulary of `docs/spec-evidence-records.md`; run `scripts/check-evidence.py --workspace .` after updating the ledgers.
 
 ## Plan Draft Requirements
 

@@ -22,8 +22,6 @@ This repository is the reusable workflow reference for the GSim multi-threading 
 7. Implement one candidate at a time.
 8. Validate correctness after each meaningful candidate.
 9. Measure with `perf`, VTune, or project benchmarks.
-10. Record candidate relationships, benchmark rows, profiler evidence, and the promotion/rejection decision.
-
-## Promotion rule
-
-A candidate is promotable only if it preserves bit-for-bit simulator correctness and improves the declared target metric under the declared thread count. Measurements follow the protocol in `docs/agent-flow.md`: pinned, same-session, interleaved A/Bs, attribution via duty instrumentation, and wall time reported against the computed floor bound. Rejected candidates must stay recorded with their measured failure reason.
+10. Update the task contract and evidence ledgers per `docs/spec-evidence-records.md`;
+    run `python3 scripts/check-evidence.py --workspace <task-workspace>` after every
+    ledger update (non-zero exit blocks the step that produced the violation).
