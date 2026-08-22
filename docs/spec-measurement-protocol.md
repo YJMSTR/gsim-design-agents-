@@ -39,18 +39,34 @@ decision (decisions are recorded in `candidates.jsonl` per
 - A component's CPU share is not its wall relevance. Any mechanism that can
   absorb slack (scans, speculation, helpers) additionally requires a
   critical-path or calibrated-replay verification before its gain is claimed.
-- A microbenchmark must drive the kernel with inputs captured from real
-  production cycles, keep production state arrays and memory layout, and
-  verify outputs by `memcmp` against same-cycle production state. A benchmark
-  measured outside production constraints proves nothing.
+- **Census before emit.** A value-distribution claim (e.g. "most stores write
+  unchanged values") is measured at the exact sites in a census-only
+  instrumented build before any behavior-affecting emission is written.
+  Counterfactual quantities (instruction ratios between executors, request
+  counts) never bound value-change distributions, and a site-level fraction
+  never extrapolates to a grouped fraction (0.97^k collapse): grouped claims
+  need grouped censuses.
+- **Counting instruments must not carry their own cost explosion.** Census
+  counters go on the affected sites only, use single-writer plain increments
+  where static ownership proves it (atomic fallback otherwise), and are built
+  with per-file optimization overrides ready: heavily-wrapped translation
+  units can explode the -O3 optimizer (observed 2h47m on 2 TUs); -O1 for the
+  pathological TUs is acceptable for census builds because the counted ratios
+  are optimizer-independent.
 
-## Probe hygiene
+## A/B isolation
 
-- Experimental changes sit behind default-off knobs. Flag-off generation must
-  stay identical to the parent.
-- A rejected probe is reverted from the tree unless a recorded reason keeps it.
-- Every rejection is recorded in `candidates.jsonl` with its measured numbers;
-  absence of a record is a protocol violation, not a neutral outcome.
+- A candidate A/B is single-variable: the model diff between sides must be
+  fully explained by the feature under test (verified by direct diff of the
+  generated trees), and both sides must come from the same generator binary.
+  Runtime-inert machinery is still a confound: any emitted text difference
+  requires the knob treatment.
+- Flag-off identity is proven, not assumed: unset-knob generation is compared
+  byte-for-byte against the pre-knob generator before any performance claim.
+- Premature closure is a protocol violation: a rejected probe requires
+  continuing to the next candidate on the route (or an explicit structural
+  closure argument), never "direction closed" from one implementation's
+  failure.
 - Knob debt is real: a default-off knob must be re-validated before reuse
   after executor changes (a knob validated in one executor era is not
   evidence in another).

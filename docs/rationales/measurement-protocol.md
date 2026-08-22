@@ -64,3 +64,48 @@ mechanism price measured outside production constraints is fiction.
   after that was fixed, a second latent bug (non-atomic activation writes)
   only surfaced at C50000. A default-off knob's validation does not survive
   executor changes for free; reuse requires revalidation.
+
+## Census before emit
+
+The saturate-sparse campaign opened by estimating the unchanged-store
+fraction from a T1-vs-T16 instruction ratio — an executor-vs-executor
+counterfactual that bounds nothing about value distributions (advisory
+catch). The actual site census then measured 96.3-97.25% unchanged stores,
+and the site-level number still did NOT predict the grouped outcome: the
+cheap extrapolation "97% unchanged => high skip rate per body" ignores the
+0.97^k collapse for k-input bodies. Hence: grouped claims need grouped
+censuses; site fractions never extrapolate.
+
+The first exec-mode store-skip build also shipped its census counters INTO
+the executable form (8.59G atomic RMWs) and hung-as-in-ran-100x-slow; the
+counterless form then measured the true (negative) answer. Counting
+instruments must be separable from behavior, and single-writer analysis
+turns most atomic counters into plain ones.
+
+## Instrument builds and the optimizer
+
+Wrapping ~257K sites concentrated into the two heaviest translation units
+made -O3 spend 2h47m on 2 TUs (still unfinished when killed). -O1 on the
+pathological TUs unblocked the census build; ratios counted by the
+instrument are optimizer-independent. Census builds therefore pre-plan
+per-file -O overrides instead of abandoning the measurement. The .o path
+mismatch (build dir root vs model/) also cost a build cycle: verify the
+make target's object path before hand-compiling stragglers.
+
+## Premature closure
+
+After the store-skip rejection the direction was declared "closed" while the
+task's own report listed two unmeasured levers — a violation of the
+campaign's standing rule (rejected probe => next candidate). Advisory
+caught it; the correction record reopened the task and the read-side census
+followed immediately, yielding the 97.07% read-side measurement. The spec
+now states the rule.
+
+## Same-binary controls
+
+The wake-trim round-1 headline (-2.54%, "5/5 negative") was retracted when
+review showed the candidate side carried an ungated owner-map emission and
+a changed spawn guard from a different generator build. The matched-control
+redo (both sides from one final binary, one-file diff verified by direct
+tree diff) reversed the sign to neutral. Runtime-inert machinery is still
+generated text; only proven byte identity counts.
