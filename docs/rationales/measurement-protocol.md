@@ -123,3 +123,15 @@ calls). Both times the optimizing work began only after the cost owner was
 measured directly. The pattern is now a standing rule: before optimizing a
 phase, add timers fine enough to name the guilty function, and treat a
 wrong premise as a measurement result, not a wasted experiment.
+
+## Revert-with-evidence before commit
+
+The scheduleBuild optimization tried a bidirectional pathExists and caught
+its own unsoundness during development: the live quotient graph's gP is not
+the exact reverse of gS through merged groups (a meet-node-on-src divergence
+at frm=9803). The optimization was reverted to one-directional gS-only DFS
+BEFORE commit, with the failure documented in the commit message, and a
+standalone differential harness (11 seeds, 470k queries, zero mismatches)
+backed the kept implementation. An optimization that cannot prove its
+invariant does not ship; the attempt's existence belongs in the ledger, not
+in the tree.
