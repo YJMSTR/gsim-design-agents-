@@ -109,3 +109,17 @@ a changed spawn guard from a different generator build. The matched-control
 redo (both sides from one final binary, one-file diff verified by direct
 tree diff) reversed the sign to neutral. Runtime-inert machinery is still
 generated text; only proven byte identity counts.
+
+## Sub-phase measurement before optimization
+
+The generation-speed campaign hit this rule twice in a row. First, the
+"Final is CPU-bound text formatting" premise survived a 4MiB-buffer probe
+(neutral) and a full parallel-emission rewrite (byte-identical, but +2.3%)
+— phase timers then proved emission is only 1.6% of Final; the real cost
+was scheduleBuild (620s) and a hidden duplicate schedule build behind
+--dump-mt-schedule-json (~521s). Second, inside scheduleBuild, sub-timers
+found 77% of the VCONTRACT mergeLoop in ONE function (pathExists, 3.51M
+calls). Both times the optimizing work began only after the cost owner was
+measured directly. The pattern is now a standing rule: before optimizing a
+phase, add timers fine enough to name the guilty function, and treat a
+wrong premise as a measurement result, not a wasted experiment.
