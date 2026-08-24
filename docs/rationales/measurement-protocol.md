@@ -135,3 +135,16 @@ standalone differential harness (11 seeds, 470k queries, zero mismatches)
 backed the kept implementation. An optimization that cannot prove its
 invariant does not ship; the attempt's existence belongs in the ledger, not
 in the tree.
+
+## Build straggler watchdog
+
+Census/instrumented models wrap hundreds of thousands of sites, and a few
+heaviest TUs then explode the -O3 optimizer (2h47m observed on SimTop682/683
+before being killed). Each incident was rescued by hand: kill, recompile the
+TU at -O1 into the make-expected object path, resume make. Three rescues is
+enough to automate: `scripts/build-watchdog.py --build-dir <dir>` polls
+/proc, kills any clang compiling a model TU longer than the threshold, and
+recompiles it at -O1 in place. Ratios counted by instrumentation are
+optimizer-independent, so -O1 objects are valid for census builds; for
+performance-candidate builds the watchdog's rescue list tells you which TUs
+to revisit at -O3 with more time budget.
