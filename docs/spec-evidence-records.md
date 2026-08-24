@@ -102,3 +102,21 @@ the outcome-vocabulary rule (they predate this specification). The checker
 downgrades their vocabulary findings to warnings under
 `--vocab-since 2026-08-20`; without the flag, strict mode applies. All other
 rules (dates, references, widths, identity) have no adoption boundary.
+
+## Champion seed artifacts
+
+Champion registrations carry their seed2 file by path in `registry.json`.
+The on-disk seed format is versioned: v1 (legacy uncompressed) and v2
+(zlib-framed, ~27:1 on XiangShan). The reader auto-detects; both replay to
+byte-identical models under the same recipe (9/9 canon gates). Migration of
+an existing champion seed is done with the generator's standalone
+transcoder (`GSIM_SEED2_TRANSCODE=in[:out]`, no generation) followed by a
+replay verification against the registry's reference model, then an
+in-place replace with the v1 file retained under `champions/_seed-v1-archive/`.
+
+The harness scripts (`gsim-experiment.py`, `gsim-champion-gate.py`) have an
+offline regression suite in the campaign workspace `tests/` (stdlib
+unittest, mocked subprocesses); run it after any harness edit. NEMU
+endpoint strings are matched with thousands separators stripped — a
+comma-aware parse is required in any new gate code (two live defects came
+from this).
