@@ -41,7 +41,12 @@ must exist), `notes`, and any structured result fields.
 A record referencing `parent` or `report` with a value that does not resolve
 is a schema error. A record with a transient state (`building`,
 `generations-running`, `pending`, `in-flight`, `running`) must be finalized or
-superseded by a later record before the task closes.
+superseded before the task closes. The supersede form is a later record whose
+`finalized` object maps the transient record's name to its outcome note; the
+checker silences the transient warning only for names so referenced.
+Historical benchmark rows may reference candidate names that never became
+ledger records (pre-vocabulary naming drift); those produce warnings, not
+errors — do not backfill synthetic records to silence them.
 
 ## Outcome vocabulary
 

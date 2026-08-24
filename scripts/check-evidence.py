@@ -155,8 +155,18 @@ def check_candidates(path: Path, f: Findings,
                         f'"{name}" lacks an identity tuple (commit/'
                         f'fingerprint/recipe_env/champion) or report')
     if transient:
-        f.warn(f'{len(transient)} transient record(s) must be finalized '
-               f'before task close: ' + '; '.join(transient[:10]))
+        # A transient record counts as finalized when a later record maps its
+        # name in a "finalized" object (the documented supersede pattern).
+        finalized = set()
+        for rec in names.values():
+            fin = rec.get('finalized')
+            if isinstance(fin, dict):
+                finalized.update(fin.keys())
+        open_transient = [t for t in transient
+                          if t.split(' ', 1)[0] not in finalized]
+        if open_transient:
+            f.warn(f'{len(open_transient)} transient record(s) must be finalized '
+                   f'before task close: ' + '; '.join(open_transient[:10]))
     return names
 
 
