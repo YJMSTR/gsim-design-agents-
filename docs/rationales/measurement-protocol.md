@@ -148,3 +148,15 @@ recompiles it at -O1 in place. Ratios counted by instrumentation are
 optimizer-independent, so -O1 objects are valid for census builds; for
 performance-candidate builds the watchdog's rescue list tells you which TUs
 to revisit at -O3 with more time budget.
+
+## Host contamination attribution before blaming the machine
+
+A week of "machine drift" (+10-17% on T32 absolute walls, T16 unaffected)
+turned out to be a single long-lived process pinned to CPU 1 — inside the
+T32 gate mask 0-31, outside the T16 mask 16-31. The attribution was found
+by mask controls (same binary on 0-31 vs 32-63/64-95/96-127), not by
+guessing load averages. Lessons: (1) same-session interleaved A/Bs stay
+valid under a constant contaminant, but absolute gates and cross-day
+comparisons silently break; (2) when a gate drifts, first vary the mask,
+not the theory; (3) a current-machine reference is only useful if the
+measurement mask is itself quiet — the reference must record its mask.
