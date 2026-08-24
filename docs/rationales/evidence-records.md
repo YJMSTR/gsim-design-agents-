@@ -56,3 +56,15 @@ Campaign estimates occasionally leaked into summaries as if measured (an
 early "25-30%" estimate was later corrected by a measured number). The
 `analysis` token and the missing-evidence-is-not-pass rule make the estimate
 boundary machine-visible instead of a convention.
+
+## Clean-clone build is a distinct gate class
+
+The delivery branch passed every in-worktree gate (byte-identity, canon,
+NEMU) while being unbuildable from a clean clone for ~2 days: a committed
+emitter referenced a helper whose definition lived only in an uncommitted
+worktree hunk. Every local build linked because the hunk was always present;
+every agent correctly noted "pre-existing WIP, left untouched". The
+fresh-clone re-verification caught it in one step. Rule: a push to the
+delivery branch is not complete until a clean clone builds — in-worktree
+success proves nothing about the pushed tree. This is now the rationale for
+making clean-clone link a CI-class gate.
