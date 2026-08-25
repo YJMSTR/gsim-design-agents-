@@ -19,7 +19,7 @@ This repository mirrors the Kernel Design Agents structure, but changes the opti
 | `docs/spec-evidence-records.md` | Normative evidence schemas, outcome vocabulary, artifact identity; enforced by `scripts/check-evidence.py`. |
 | `docs/rationales/` | WHY behind the specs: the incident behind each rule. |
 | `docs/agent-flow.md` | Minimal end-to-end workflow for the GSim optimization loop. |
-| `scripts/` | Workspace bootstrapping (`init-task-workspace.py`), evidence contracts (`check-evidence.py`), build straggler rescue (`build-watchdog.py` — auto O1-fallback for optimizer-explosive instrumented TUs), champion reproduction classification (`gsim-champion-drift.py` — text-exact vs schedule-exact vs drift, with an explicit whitelist for accepted generator-evolution deltas), and knob liveness lint (`gsim-knob-lint.py` — fails when a run script references a GSIM_* variable the generator source never reads). |
+| `scripts/` | Workspace bootstrapping (`init-task-workspace.py`), evidence contracts (`check-evidence.py`), build straggler rescue (`build-watchdog.py` — auto O1-fallback for optimizer-explosive instrumented TUs), champion reproduction classification (`gsim-champion-drift.py` — text-exact vs schedule-exact vs drift, with an explicit whitelist for accepted generator-evolution deltas), and knob liveness lint (`gsim-knob-lint.py` — fails when a run script references a GSIM_* variable the generator source never reads), and doc-knob consistency (`gsim-doc-knob-check.py` — fails when a documented knob exists nowhere in generator/model/build text; reverse direction is info-only for internal debug knobs). |
 
 ## Quick start
 
