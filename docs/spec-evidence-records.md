@@ -125,3 +125,33 @@ unittest, mocked subprocesses); run it after any harness edit. NEMU
 endpoint strings are matched with thousands separators stripped — a
 comma-aware parse is required in any new gate code (two live defects came
 from this).
+
+## Reproduction classification
+
+"Replay reproduces the champion" is a two-level claim; conflating the levels
+produced a published README overclaim (2026-08-25). Every champion
+re-verification must state which level was observed:
+
+- **text-exact**: every model file sha256-identical to the registered artifact
+  (only achievable with the same generator revision);
+- **schedule-exact**: the replay applies all canon pins and the schedule-facts
+  core scalars (`sccs`/`mtasks`/`merges`/`cycRej`) match the champion's
+  `facts.txt`, but the emitted text may drift with generator evolution;
+- **drift**: anything else — a failed promotion gate.
+
+Champion directories carry `facts.txt` (the `[mt-dense-vcontract]` facts line
+from the registration generation log) so the check is mechanical:
+`scripts/gsim-champion-drift.py --champion DIR --candidate MODEL_DIR
+--gen-log GENLOG [--ok-drift FILE ...]`. Text drift confined to an explicit
+whitelist (accepted generator-evolution deltas, e.g. new default-on fields)
+downgrades to schedule-exact-with-known-drift and must be named in the
+record. The schedule check runs before the text-exact early return, so a
+scalar mismatch cannot hide behind identical text.
+
+Two related knob lints keep recipes and docs honest:
+`scripts/gsim-knob-lint.py` fails when a run script references a `GSIM_*`
+variable absent from the generator/build source (dead knobs like
+`GSIM_MT_DENSE_R4` silently rot otherwise), and
+`scripts/gsim-doc-knob-check.py` fails when a documented knob exists nowhere
+in generator/model/build text (stale docs). Archival experiment scripts keep
+their dead knobs as historical evidence; the lint targets live recipes.
