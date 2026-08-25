@@ -28,7 +28,8 @@ import sys
 from pathlib import Path
 
 KNOB_RE = re.compile(r'\b(GSIM_[A-Z0-9_]+)\b')
-SOURCE_SUFFIXES = ('.cpp', '.h', '.cc', '.hpp', '.cxx')
+SOURCE_SUFFIXES = ('.cpp', '.h', '.cc', '.hpp', '.cxx', '.mk')
+SOURCE_NAMES = ('Makefile', 'makefile')
 
 
 def script_knobs(path: Path) -> set[str]:
@@ -42,10 +43,10 @@ def script_knobs(path: Path) -> set[str]:
 def source_corpus(dirs: list[Path]) -> str:
     chunks = []
     for d in dirs:
-        for suf in SOURCE_SUFFIXES:
-            for p in d.rglob('*' + suf):
-                if '.git' in p.parts:
-                    continue
+        for p in d.rglob('*'):
+            if '.git' in p.parts or not p.is_file():
+                continue
+            if p.suffix in SOURCE_SUFFIXES or p.name in SOURCE_NAMES:
                 try:
                     chunks.append(p.read_text(errors='ignore'))
                 except OSError:
