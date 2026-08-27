@@ -70,3 +70,13 @@ decision (decisions are recorded in `candidates.jsonl` per
 - Knob debt is real: a default-off knob must be re-validated before reuse
   after executor changes (a knob validated in one executor era is not
   evidence in another).
+- Machine serialization is part of the measurement: no timed runs while any
+  generation/build is churning (a KB-sweep wall was once polluted +73% by a
+  concurrent agent build; the polluting run was re-measured before citing).
+  Interleaved pairs must be bracketed by idle, and multi-stage scripts must
+  be internally sequential (gen -> build -> measure).
+- First-run warm-up outliers are discarded symmetrically: whichever binary
+  runs first after being cold (page-cache miss on a multi-GB emu) can read
+  high; drop each side's first run or warm both binaries before pairing.
+  The SHORT_NAMES T32 verdict survived this filter (+3.1% after symmetric
+  discard vs +4.5% raw) - apply the filter and state both numbers.
