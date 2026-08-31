@@ -38,17 +38,36 @@ SAME interleaved session (never reuse a denominator from an earlier session).
    - T32-width tier work (its champion is MAXMT=2400 fresh, never swept)
    - v86-T16 re-registration at MAXMT=1200 (measured -11.4%, needs gate+seed)
    - codegen: emission knobs documented in README "Toolchain pipeline cost"
-2. State the hypothesis in one sentence, run the experiment SMALL (a probe or
-   one generation+build+interleaved-bench), record numbers.
+2. STATE OF PLAY (2026-09-01, read the ledger tail to confirm): the T16 knob
+   surface is CLOSED at high statistical power (three sessions; best compound
+   MAXMT=2000 x LOOKAHEAD=512 = 7.08s, -2.58% vs champion, 8/8 pairs disjoint
+   but below the 3% registration bar). 2.5x (needs <=6.26s same-session) is
+   NOT reachable via knobs: wall time is work-bound. Remaining levers are
+   CODE-LEVEL, each must be default-off and FIR-gate-verified byte-identical
+   when off:
+   - executor sync protocol: owner-ready token batching/coalescing per level,
+     banked counters beyond GSIM_MT_DENSE_OWNER_BANK_COUNTERS, level barrier
+     elision when a level is single-worker
+   - emission layout: per-worker major-text specialization, activation-check
+     hoisting, subStep splitting by measured icache pressure (see
+     wiki-compile-optimization / A104 R1-S1 notes in mtwiki)
+   - duty-cycle: per-worker idle instrumentation to find which levels strand
+     workers (lvlSum says 1600 optimal but measured 2000 - the gap IS the
+     stranding; a schedule/emission change that closes it is worth ~3-5%)
+   - T32-width findings that transfer down (its tier was never swept)
+3. State the hypothesis in one sentence, run the experiment SMALL (a probe or
+   one generation+build+interleaved-bench), record numbers. Code-level probes:
+   measure BEFORE building (read the emitted cpp, count tokens/branches) -
+   a day of building is not needed to kill a bad idea.
 3. If it wins ≥3% on a clean interleaved A/B (warmup discarded, ≥3 rounds,
    fixed mask 0-15, machine serialized): run the correctness gate (coremark
    full difftest must HIT GOOD TRAP pc=0x80001ca0, 663758 instr, zero mismatch)
    and only then register/update a champion directory + README row.
-4. Append ONE ledger entry (validated status vocabulary: analysis/baseline/
+5. Append ONE ledger entry (validated status vocabulary: analysis/baseline/
    closed/correction/diagnostic/instrumentation/measured/promote/reject/retain/
    retracted/validated) and run the evidence check. Non-zero exit = your round
    failed; fix the ledger before ending.
-5. End your turn with a 3-line summary: what was tried, the number, next hint.
+6. End your turn with a 3-line summary: what was tried, the number, next hint.
 
 ## Hard rules
 
