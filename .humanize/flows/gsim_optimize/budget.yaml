@@ -1,0 +1,4 @@
+# gsim-humanize.sh writes ROUNDS into a temp copy of this file.
+rounds: 42
+target_ratio: 2.5
+ledger: ../gsim-task-saturate-sparse/candidates.jsonl
