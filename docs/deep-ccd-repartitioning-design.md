@@ -73,8 +73,14 @@ instruction parity at gsim's IPC projects ~6.0s (< the 6.30s bar). So:
 - **WP2' (new, higher EV): on-path dispatch slimming** — reduce per-mtask
   entry/flag-check/subStep-prologue cost on the critical path (the cursor
   probe cut off-path scan volume; the on-path machinery is the 1.20x).
-  First slice: perf-annotate one representative body's prologue/epilogue
-  and cost-model an elided variant (default-off emission knob).
+  First slice DONE (wp2p-first-slice-findings, 2026-09-01): the on-path
+  machinery is the $old$ copy wall + activation compares at every mtask
+  entry. Two candidate cuts, both correctness-critical emission surgery:
+  (a) dead-$old$-elimination (copy needed only for same-cycle old-readers
+  or activation compare; $NEXT-only writers need neither),
+  (b) batched activation (word-wide compare+bitmap per successor-group).
+  Implement in a FRESH session: FIR gate + model-hash + 5-pair + coremark
+  gate discipline mandatory (770bab7 trap).
 - WP1/WP2/WP3 as below remain valid; state arenas are now second priority.
 
 ## Kill criteria
