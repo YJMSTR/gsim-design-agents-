@@ -37,7 +37,9 @@ for ((i=1; i<=ROUNDS; i++)); do
   # handshake can hang after a completed turn (protocol divergence), so timeout
   # bounds the process and the ledger tail is the real completion signal.
   # Agent spec overridable: AGENT="kimi/k3:max" scripts/gsim-humanize.sh ...
+  # (guard: an inherited junk AGENT — e.g. "1" from an outer shell — is ignored)
   AGENT="${AGENT:-pi/glm-5.3:max}"
+  case "$AGENT" in */*) : ;; *) AGENT="pi/glm-5.3:max" ;; esac
   timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "$AGENT" \
     -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md)" &
   EXECPID=$!
