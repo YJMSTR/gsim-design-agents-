@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Drive the gsim campaign through humanize2 (pi backend = omp via ~/.local/bin/pi shim).
+# Drive the gsim campaign through humanize2. Effort: glm-5.3:max by default
+# (user directive 2026-09-01: use max, not high; kimi/k3:max also available). (pi backend = omp via ~/.local/bin/pi shim).
 #
 # Usage:
 #   scripts/gsim-humanize.sh [ROUNDS]        # run the gsim_optimize flow
@@ -35,7 +36,9 @@ for ((i=1; i<=ROUNDS; i++)); do
   # A round is DONE when its ledger entry lands, not when hmz exits: omp's rpc
   # handshake can hang after a completed turn (protocol divergence), so timeout
   # bounds the process and the ledger tail is the real completion signal.
-  timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "pi/glm-5.3:high" \
+  # Agent spec overridable: AGENT="kimi/k3:max" scripts/gsim-humanize.sh ...
+  AGENT="${AGENT:-pi/glm-5.3:max}"
+  timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "$AGENT" \
     -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md)" &
   EXECPID=$!
   # Ledger watcher: the round's real end is its ledger entry. Once it lands,
