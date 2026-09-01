@@ -54,6 +54,18 @@ SAME interleaved session (never reuse a denominator from an earlier session).
    - duty-cycle: per-worker idle instrumentation to find which levels strand
      workers (lvlSum says 1600 optimal but measured 2000 - the gap IS the
      stranding; a schedule/emission change that closes it is worth ~3-5%)
+   - ORCHESTRATOR DECISION 2026-09-01: continue T16 emission-work reduction
+     (sync ceiling 3-6% + emission reduction are ADDITIVE; the 2.5x gap is
+     -12%; emission must contribute ~8%). The knob+sync directions stay
+     closed - do not re-run them. FIRST STEP of an emission round: locate
+     where wall time actually goes with perf (no rebuild needed):
+       perf stat -e instructions,cycles,icache_misses,L1-icache-load-misses \
+         taskset -c 0-15 env GSIM_THREADS=16 GSIM_MT_EXECUTOR=dense \
+         <champion emu> -i <ready-to-run>/linux.bin -C 30000 -I 99999999 --no-diff
+     and `perf record`/`perf report` for hot-function attribution. Attack the
+     single hottest emitted structure (likely the per-mtask activation-scan
+     loop or a few giant mtasks' bodies); verify instruction-count reduction
+     BEFORE claiming wall-time wins.
    - T32-width findings that transfer down (its tier was never swept)
 3. State the hypothesis in one sentence, run the experiment SMALL (a probe or
    one generation+build+interleaved-bench), record numbers. Code-level probes:
