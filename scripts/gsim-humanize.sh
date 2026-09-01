@@ -36,11 +36,20 @@ for ((i=1; i<=ROUNDS; i++)); do
   # A round is DONE when its ledger entry lands, not when hmz exits: omp's rpc
   # handshake can hang after a completed turn (protocol divergence), so timeout
   # bounds the process and the ledger tail is the real completion signal.
-  # Agent spec overridable: AGENT="kimi/k3:max" scripts/gsim-humanize.sh ...
-  # (guard: an inherited junk AGENT — e.g. "1" from an outer shell — is ignored)
-  AGENT="${AGENT:-pi/glm-5.3:max}"
-  case "$AGENT" in */*) : ;; *) AGENT="pi/glm-5.3:max" ;; esac
-  timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "$AGENT" \
+  # Builder + reviewer (user directive 2026-09-01): builder = glm-5.3 (or k3),
+  # reviewer = codexa/gpt-5.6-sol, falling back to k3 when gpt is unavailable.
+  # Guards: inherited junk AGENT/BUILDER/REVIEWER values (e.g. "1") are ignored.
+  BUILDER="${BUILDER:-${AGENT:-pi/glm-5.3:max}}"
+  case "$BUILDER" in */*) : ;; *) BUILDER="pi/glm-5.3:max" ;; esac
+  REVIEWER="${REVIEWER:-}"
+  if [[ -z "$REVIEWER" ]]; then
+    REVIEWER="pi/codexa/gpt-5.6-sol:max"
+    if ! timeout 90 omp --model codexa/gpt-5.6-sol --print "ok" >/dev/null 2>&1; then
+      echo "reviewer fallback: codexa/gpt-5.6-sol unavailable -> k3"
+      REVIEWER="pi/k3:max"
+    fi
+  fi
+  timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "$BUILDER" -a "$REVIEWER" \
     -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md)" &
   EXECPID=$!
   # Ledger watcher: the round's real end is its ledger entry. Once it lands,
