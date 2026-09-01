@@ -55,12 +55,22 @@ for ((i=1; i<=ROUNDS; i++)); do
   # Ledger watcher: the round's real end is its ledger entry. Once it lands,
   # give the agent 180s of grace for final words, then kill the (handshake-
   # wedged) exec instead of idling to the timeout.
+  REVIEWS=runs/humanize/reviews.jsonl
+  REV_BEFORE=$(wc -l < "$REVIEWS" 2>/dev/null || echo 0)
   while kill -0 $EXECPID 2>/dev/null; do
     sleep 30
     NOW=$(tail -1 "$LEDGER" 2>/dev/null | python3 -c 'import json,sys;print(json.loads(sys.stdin.read())["name"])' 2>/dev/null || echo none)
     if [[ "$NOW" != "$BEFORE" ]]; then
-      sleep 180
-      kill $EXECPID 2>/dev/null && echo "round $i: ledger landed ($NOW), exec released"
+      # Builder's entry landed; the REVIEWER turn follows inside the same
+      # exec. Wait for its verdict line (reviews.jsonl growth) or a hard
+      # 45-min grace before releasing the (handshake-wedged) exec.
+      REV_DEADLINE=$(( $(date +%s) + 2700 ))
+      while kill -0 $EXECPID 2>/dev/null && [[ $(date +%s) -lt $REV_DEADLINE ]]; do
+        sleep 30
+        REV_NOW=$(wc -l < "$REVIEWS" 2>/dev/null || echo 0)
+        [[ "$REV_NOW" != "$REV_BEFORE" ]] && break
+      done
+      kill $EXECPID 2>/dev/null && echo "round $i: ledger landed ($NOW), exec released (reviews $REV_NOW/$REV_BEFORE)"
       break
     fi
   done
