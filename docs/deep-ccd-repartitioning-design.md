@@ -76,9 +76,13 @@ instruction parity at gsim's IPC projects ~6.0s (< the 6.30s bar). So:
   First slice DONE (wp2p-first-slice-findings, 2026-09-01): the on-path
   machinery is the $old$ copy wall + activation compares at every mtask
   entry. Two candidate cuts, both correctness-critical emission surgery:
-  (a) dead-$old$-elimination (copy needed only for same-cycle old-readers
-  or activation compare; $NEXT-only writers need neither),
-  (b) batched activation (word-wide compare+bitmap per successor-group).
+  (a) dead-$old$-elimination — QUANTIFIED (old-copy-liveness-quantified,
+  2026-09-01): 1.11M static copies; 53.3% DEAD (592,763 sites, decl never
+  used; mechanical cut, lower risk, mostly hygiene: smaller bodies/I-cache),
+  47% USED (519,587 sites feeding ESSENT compares — the actual wall lever),
+  (b) batched activation over the 519,587 USED compare sites (higher risk).
+  SEQUENCED KILL-TEST: implement (a) first; if wall moves <0.5%, revise the
+  instruction-excess attribution BEFORE attempting (b).
   Implement in a FRESH session: FIR gate + model-hash + 5-pair + coremark
   gate discipline mandatory (770bab7 trap).
 - WP1/WP2/WP3 as below remain valid; state arenas are now second priority.
