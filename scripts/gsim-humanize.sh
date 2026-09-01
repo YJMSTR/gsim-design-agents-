@@ -36,8 +36,21 @@ for ((i=1; i<=ROUNDS; i++)); do
   # handshake can hang after a completed turn (protocol divergence), so timeout
   # bounds the process and the ledger tail is the real completion signal.
   timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "pi/glm-5.3:high" \
-    -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md)" || \
-    echo "round $i exec ended early (code $?)"
+    -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md)" &
+  EXECPID=$!
+  # Ledger watcher: the round's real end is its ledger entry. Once it lands,
+  # give the agent 180s of grace for final words, then kill the (handshake-
+  # wedged) exec instead of idling to the timeout.
+  while kill -0 $EXECPID 2>/dev/null; do
+    sleep 30
+    NOW=$(tail -1 "$LEDGER" 2>/dev/null | python3 -c 'import json,sys;print(json.loads(sys.stdin.read())["name"])' 2>/dev/null || echo none)
+    if [[ "$NOW" != "$BEFORE" ]]; then
+      sleep 180
+      kill $EXECPID 2>/dev/null && echo "round $i: ledger landed ($NOW), exec released"
+      break
+    fi
+  done
+  wait $EXECPID 2>/dev/null || true
   rm -f "$CFG"
   pkill -f "omp --mode rpc" 2>/dev/null || true
   AFTER=$(tail -1 "$LEDGER" 2>/dev/null | python3 -c 'import json,sys;print(json.loads(sys.stdin.read())["name"])' 2>/dev/null || echo none)
