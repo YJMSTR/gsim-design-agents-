@@ -63,6 +63,20 @@ closing the remaining 5.6% (6.93 → 6.54s): moderate — WP2 alone likely
 1-3% (extends the validated greedy); WP3 is where the attribution's 18.5%
 ceiling could be realized, with genuine model risk.
 
+## Priority update (2026-09-01, dispatch-machinery-synthesis)
+
+The ledger correction recovered from `t16-tailscan-memo-fail-probe` changes
+priority: Verilator executes 310.5G instructions vs gsim 372.2G on the same
+workload — the 61.7G excess is dispatch/scan machinery, not bodies, and
+instruction parity at gsim's IPC projects ~6.0s (< the 6.30s bar). So:
+
+- **WP2' (new, higher EV): on-path dispatch slimming** — reduce per-mtask
+  entry/flag-check/subStep-prologue cost on the critical path (the cursor
+  probe cut off-path scan volume; the on-path machinery is the 1.20x).
+  First slice: perf-annotate one representative body's prologue/epilogue
+  and cost-model an elided variant (default-off emission knob).
+- WP1/WP2/WP3 as below remain valid; state arenas are now second priority.
+
 ## Kill criteria
 
 If WP2's J-aware assignment does not beat the greedy γ250 by ≥1% in a
