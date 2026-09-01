@@ -51,7 +51,7 @@ class Config(BaseModel):
 
 @flow(resumable=True)
 def run(
-    agents: tuple[Agent],
+    agents: tuple[Agent, Agent],
     task: str,
     config: Config | None = None,
     state: dict[str, Any] | None = None,
