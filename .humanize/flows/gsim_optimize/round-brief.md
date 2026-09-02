@@ -12,7 +12,13 @@ only memory. Read it before acting.
   are also your progress log.
 - Champions + registries: `../gsim-task-verilator-dual-default4488/champions/`
 - gsim generator worktree (code + docs): `/tmp/gsim-wip-b1-lookahead` (branch
-  `deliver/gsim-mt-dense-v1`; NEVER push anywhere but `yjmstr` remote)
+  `dev/mt-dense-experiments`; push ONLY there, never to deliver)
+- BRANCH HYGIENE (user directive 2026-09-03): `deliver/gsim-mt-dense-v1` is
+  FROZEN at 114fec0 (the deliverable tip). ALL experiment commits go to
+  `dev/mt-dense-experiments`. TIE/REJECT experiments: record evidence in the
+  ledger but DO NOT keep the knob code as new commits unless the user asks -
+  rejected code is complexity, the ledger is the preservation mechanism. A
+  candidate's code earns deliver only via user-directed merge.
 - Frozen FIR inputs (read-only): `../rtl-kunminghu-v3-frozen/SimTop.fir` (active
   RTL), `../rtl-v86-frozen/SimTop.fir`
 - Domain knowledge: `skills/mtwiki/wiki/` (esp. wiki-generator-speed.md 追记 1-9)

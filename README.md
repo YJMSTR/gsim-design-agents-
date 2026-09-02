@@ -45,21 +45,11 @@ Recommended safe path:
 3. Copy or worktree-clone GSim only after the task contract names that workspace.
 4. Run only read-only inspection commands against the existing worktree unless explicitly taking ownership.
 
+## Benchmarks (linux-100k, no-diff, same-session interleaved, CPU mask 0-15)
 
-## Session Results (2026-09-02, 42h campaign)
-
-### T16 linux-30k champions (both frozen RTLs, seed-contract verified)
-
-| Champion | Stack | Wall | Session gain |
+| Simulator | Stack | Wall (100k) | instrCnt |
 |---|---|---|---|
-| `newrtl-t16-compact-v4` (kunminghu-v3) | MAXMT2000 + LA1024 + CCD250 + SBO + sorted-waits | **6.91-6.94s** | 7.19 -> 6.91 (-3.9%) |
-| `xiangshan-t16-compact-v4` (v86) | MAXMT1200 + LA128 + CCD350 + SBO + sorted-waits | **3.105s** | 3.378 -> 3.105 (-8.1% today) |
+| gsim-mt T16 (`newrtl-t16-compact-v4`) | MAXMT2000 + LA1024 + CCD250 + SBO + sorted-waits | **24.50s** | 460,622 |
+| Verilator T16 (same-harness rebuild) | EMU_THREAD=16, -O3 -march=znver4 | 49.80s | 460,622 |
 
-Ratio vs same-session rebuilt V-T16 (harness identity verified via instrCnt=86,469): **2.19-2.21x** (V drifts 15.3-16.4s across sessions; 2.30x at yesterday's 15.91s denominator).
-
-### Methodology delivered (cross-design validated)
-1. **Structure-layer params (MAXMT) inherit optima** - confirmed on both RTLs
-2. **Emission-layer knobs (CCD/SBO/sorted-waits) transfer across designs**; schedule-layer (LA) and per-knob optima (gamma: 250 vs 350) are design-specific - transfer then re-sweep
-3. **WP2' closure**: the 61.7G instruction excess vs Verilator is the intrinsic price of event detection (three measured slices: dead-strip DCE'd, OR-batching +1.16%, SIMD ceiling 1-3%)
-
-Ledger: 179 entries (all green). Wiki addenda 1-22. Full attribution of the remaining gap to 2.5x.
+**Speedup: 2.04x** (gsim / Verilator, same interleaved session).
