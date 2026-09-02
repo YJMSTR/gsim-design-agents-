@@ -81,8 +81,14 @@ instruction parity at gsim's IPC projects ~6.0s (< the 6.30s bar). So:
   used; mechanical cut, lower risk, mostly hygiene: smaller bodies/I-cache),
   47% USED (519,587 sites feeding ESSENT compares — the actual wall lever),
   (b) batched activation over the 519,587 USED compare sites (higher risk).
-  SEQUENCED KILL-TEST: implement (a) first; if wall moves <0.5%, revise the
-  instruction-excess attribution BEFORE attempting (b).
+  SEQUENCED KILL-TEST: **(a) EXECUTED 2026-09-01** (`dead-old-strip-killtest`):
+  386,483 dead lines textually stripped, compiler-oracle-verified correct,
+  wall **-0.9% (overlapping)** — below the 0.5% bar. VERDICT: the dead half
+  was LLVM-DCE'd already; the excess is LIVE compares. (b) batched activation
+  over the 725,867 USED sites is the sole remaining emission lever — but the
+  attribution revision now required is: WHERE do the 61.7G excess instructions
+  actually execute if not in dead loads? Re-run perf attribution on the
+  stripped build before investing in (b).
   Implement in a FRESH session: FIR gate + model-hash + 5-pair + coremark
   gate discipline mandatory (770bab7 trap).
 - WP1/WP2/WP3 as below remain valid; state arenas are now second priority.
