@@ -88,7 +88,11 @@ instruction parity at gsim's IPC projects ~6.0s (< the 6.30s bar). So:
   over the 725,867 USED sites is the sole remaining emission lever — but the
   attribution revision now required is: WHERE do the 61.7G excess instructions
   actually execute if not in dead loads? Re-run perf attribution on the
-  stripped build before investing in (b).
+  stripped build before investing in (b). **REVISED ANALYTICALLY 2026-09-01**
+  (`attribution-revision-analytical`): the excess lives in the 136G tail-scan
+  + dispatch pool; (b) is re-scoped as **fused compare-scan** (batch activation
+  + scan-loop fusion in one emission change, ceiling ~10% wall — above the
+  5.6% gap). Fresh-session work.
   Implement in a FRESH session: FIR gate + model-hash + 5-pair + coremark
   gate discipline mandatory (770bab7 trap).
 - WP1/WP2/WP3 as below remain valid; state arenas are now second priority.
