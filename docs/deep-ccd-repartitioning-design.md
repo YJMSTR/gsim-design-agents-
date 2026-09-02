@@ -130,3 +130,18 @@ mask/match logic must handle the target-parity semantics exactly.
 Emission site: cppEmitter's dispatch-table emission (~line 14590, the
 kDenseOwnerReadyWaitList writer). Knob: GSIM_EMIT_FUSED_SCAN=1 (default
 off). Validation: the standard chain.
+
+
+## v4 后记（2026-09-02，LA1024 发现）
+
+**v4 已注册**：`newrtl-t16-compact-v4`（LA=1024，-1.98% vs v3 5/5，种子 `2348c8900e5d3ce8`）。LA 曲线未在 512 饱和——早期停止规则"段长 ~530"是 CCD 亲和引入前的测量。全栈 {512,768,1024,2048}={7.050,6.990,**6.910**,6.940}。
+
+**WP2′ 三切片终局**（更新上文优先级）：
+- 死拷贝剔除：LLVM 已 DCE（零效果）
+- OR 位点批量（bacc[256]，11.5× 静态压缩）：**+1.16% 回归**——OR 管道不是成本
+- SIMD 打包 diff：投影上限 ~1-3%（加载主导）
+- **结论：61.7G 指令超额 = 事件检测机制的内在代价**（Verilator 静态求值零代价，gsim 付比较换跳工）。突破需层级汇总位——激活协议重设计。
+
+**重扫纪律**（v4 三维验证）：MAXMT（结构层，稳定 2000）、γ（调度层，稳定 250）、LA（调度层，**移动** 512→1024）。规则：栈变更后必须重扫调度层参数。
+
+**supernode 粒度**（未测过的生成旋钮）：{20,30,60}={7.25,7.06,7.68}——30 最优；+60 损失 3.3× 于 -10（跳过粒度敏感性主导）。
