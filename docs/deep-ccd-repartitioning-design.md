@@ -102,3 +102,31 @@ instruction parity at gsim's IPC projects ~6.0s (< the 6.30s bar). So:
 If WP2's J-aware assignment does not beat the greedy γ250 by ≥1% in a
 5-pair, WP3's premise (locality beats protocol) is weakened — re-audit
 before continuing.
+
+
+## Appendix: fused compare-scan implementation sketch (2026-09-01, session-final)
+
+Current emitted scan (per entry, per candidate):
+```cpp
+for (wait = entry->waitBegin; wait < entry->waitEnd; ++wait)
+  ready &= (tokens[waitList[wait]].ready.load(acquire) == target);
+```
+Cost: 15.1 avg iterations × (double-indirect load + cmp + and) × 46.4M calls.
+
+Fused version (emission change in the lookahead-tail emitter):
+1. SORT each task's waitList slice by token index at emission (locality:
+   adjacent tokens share cache lines 64-way).
+2. BATCH-CHECK: for sorted consecutive indices within a 64-token window,
+   load the containing line's 64 bytes as one uint64_t and mask-compare
+   against target pattern — one load replaces up to 64 individual loads
+   when a task's waits cluster (they do: intra-supernode dependencies).
+3. FALLBACK: scattered indices check individually as today.
+
+Expected: 15.1 → ~3-5 effective loads per entry (batched + fallback),
+attacking the 136G scan pool directly. Correctness invariant: the batched
+check must be equivalent to the conjunction of individual checks — the
+mask/match logic must handle the target-parity semantics exactly.
+
+Emission site: cppEmitter's dispatch-table emission (~line 14590, the
+kDenseOwnerReadyWaitList writer). Knob: GSIM_EMIT_FUSED_SCAN=1 (default
+off). Validation: the standard chain.
