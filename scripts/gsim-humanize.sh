@@ -43,14 +43,23 @@ for ((i=1; i<=ROUNDS; i++)); do
   case "$BUILDER" in */*) : ;; *) BUILDER="pi/glm-5.3:max" ;; esac
   REVIEWER="${REVIEWER:-}"
   if [[ -z "$REVIEWER" ]]; then
-    REVIEWER="pi/codexa/gpt-5.6-sol:max"
+    REVIEWER="pi/codexa/gpt-5.6-sol:xhigh"
     if ! timeout 90 omp --model codexa/gpt-5.6-sol --print "ok" >/dev/null 2>&1; then
       echo "reviewer fallback: codexa/gpt-5.6-sol unavailable -> k3"
       REVIEWER="pi/k3:max"
     fi
   fi
+  # Planner = main k3 session (user directive 2026-09-03): each round executes
+  # runs/humanize/plan.md written by the main session. The wrapper WAITS for a
+  # fresh plan (absent), injects it into the builder brief, archives after round.
+  PLAN=runs/humanize/plan.md
+  mkdir -p runs/humanize
+  if [[ ! -f "$PLAN" ]]; then
+    echo "round $i: waiting for runs/humanize/plan.md (main-session planner)"
+    while [[ ! -f "$PLAN" ]]; do sleep 30; done
+  fi
   timeout "${ROUND_TIMEOUT:-7200}" hmz exec -f local/gsim_optimize -a "$BUILDER" -a "$REVIEWER" \
-    -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md)" &
+    -c "$CFG" "$(cat .humanize/flows/gsim_optimize/round-brief.md; echo; echo '## ROUND PLAN (main-session planner - follow exactly; if the hypothesis proves untestable mid-round, record the blocker and take the fallback)'; echo; cat "$PLAN")" &
   EXECPID=$!
   # Ledger watcher: the round's real end is its ledger entry. Once it lands,
   # give the agent 180s of grace for final words, then kill the (handshake-
@@ -77,6 +86,7 @@ for ((i=1; i<=ROUNDS; i++)); do
   wait $EXECPID 2>/dev/null || true
   rm -f "$CFG"
   pkill -f "omp --mode rpc" 2>/dev/null || true
+  mv -f "$PLAN" "runs/humanize/plan-consumed-round$i.md" 2>/dev/null || true
   AFTER=$(tail -1 "$LEDGER" 2>/dev/null | python3 -c 'import json,sys;print(json.loads(sys.stdin.read())["name"])' 2>/dev/null || echo none)
   if [[ "$BEFORE" == "$AFTER" ]]; then
     echo "round $i produced NO new ledger entry (${BEFORE}) — counting as a spent round"
