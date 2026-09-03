@@ -80,3 +80,25 @@ decision (decisions are recorded in `candidates.jsonl` per
   high; drop each side's first run or warm both binaries before pairing.
   The SHORT_NAMES T32 verdict survived this filter (+3.1% after symmetric
   discard vs +4.5% raw) - apply the filter and state both numbers.
+
+
+## Strengthened rules (2026-09-03, from the emu-inode-speed-anomaly finding)
+
+1. **Binary speed is an inode property.** An emu's .text pages come from the
+   per-inode page cache; their physical addresses decide L3 conflict patterns
+   with the simulator state. Same bytes, different inode: measured swings up
+   to ~50% (IPC 0.47 vs 0.65). ASLR does not average it (sticky per inode per
+   boot). Hardlink = fast; copy = new dice.
+2. **Champion registration MUST speed-verify the stored binary IN PLACE.**
+   Copying a fast build-dir binary into champions/ can land a slow copy
+   (observed: 16.3s build-dir vs 24.9s registered copy). Fix: rebuild on the
+   target filesystem, speed-test, `mv` (rename preserves the inode) into
+   champions/, re-gate.
+3. **A/B deltas must replicate across INDEPENDENT builds.** Interleaving two
+   fixed inodes does NOT average the luck component - it is constant per
+   inode. A claim stands when the delta reproduces with a fresh build pair.
+   Applied to every champion of this era (T8 -4.24%, T16 -0.92%, v86 -3.13%).
+4. **Small effects (~2%) must declare the inode/drift component magnitude.**
+5. **Check machine load before any timed run** (this machine has other
+   tenants - docker containers whose spikes contaminated measurements; load
+   must be < ~2 on the bench mask's node).

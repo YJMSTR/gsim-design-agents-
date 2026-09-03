@@ -90,6 +90,12 @@ gsim ≤ V/2.5 measured in the SAME interleaved session.
 - Runtime GSIM_THREADS must equal generation width (14-16× cliff otherwise).
 - Every perf claim: instrCnt must be 86,469 (linux-30k) — if not, something is
   wrong; investigate, don't record.
+- Measurement hygiene (2026-09-03 protocol): emu speed is an INODE property
+  (per-inode page-cache physical pages; copies are new dice, hardlinks keep
+  it). (a) any A/B delta must replicate across independent fresh builds, not
+  just interleaved re-runs of one build pair; (b) a registered binary must be
+  speed-verified IN PLACE (rebuild on the target fs + mv/rename, never a bare
+  cp); (c) check load (<2) before timed runs - other tenants share the machine.
 - Time-box one round to ~1 hour of machine work. Small experiments only.
 - If the 2.5× target is MET and gated: write `.humanize/flows/gsim_optimize/TARGET_ACHIEVED`
   with the numbers inside, update README + champion, then end.
