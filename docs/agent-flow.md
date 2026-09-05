@@ -77,3 +77,10 @@ Existing agent attempts in the surrounding workspace (sibling directories of thi
 ## Existing-worktree handoff
 
 Before continuing from prior GSim optimization attempts, read `docs/gsim-worktree-handoff.md`. The handoff is part of the draft phase: the agent must understand the current worktree layout, MT flags, regression scripts, and known candidate state before editing.
+## Session-start hygiene (2026-09-06 lessons)
+
+1. **Uncommitted-WIP check**: before any merge/rebase/cleanup sync into a worktree, run `git status -s` on it. In-flight experiment edits must be committed first (marked `wip:` + measured/unmeasured in the message). An uncommitted emission change was once almost clobbered by a branch merge; it later turned out to never have compiled the model.
+2. **Registry-recipe fidelity**: when reproducing a registered champion for byte-identity checks, take the recipe verbatim from the champion's `registry.json` (`generator.recipe` field), never from session memory or later stacked experiments. Champion dirs are registered at specific knob sets; later session-best stacks (e.g. extra emission knobs) produce different bytes by design.
+3. **A/B script environment drift**: `/usr/bin/time` output may arrive ANSI-color-wrapped; the ab16 parser strips color codes before float extraction (fixed 2026-09-06). If a measurement script asserts on log content, check the raw bytes (`od -c`) before rewriting the probe.
+4. **`grep -c` in `&&` chains**: zero matches return exit 1 and silently break chained build/gate/generate pipelines. Use `;` or `|| true` between stages, and echo stage boundaries so partial progress is visible.
+5. **Deliver->experiment syncs**: after merging the cleaned deliver branch into an experiment branch, verify with the registered-champion byte-identity check (FIR gate alone only covers default-off identity). Excision merges can silently drop experiment-added blocks adjacent to excised regions; the champion regen catches this.
