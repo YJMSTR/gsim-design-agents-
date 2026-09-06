@@ -13,15 +13,18 @@ only memory. Read it before acting.
 - Champions + registries: `../gsim-task-verilator-dual-default4488/champions/`
 - gsim generator worktree (code + docs): `/tmp/gsim-wip-b1-lookahead` (branch
   `dev/mt-dense-experiments`; push ONLY there, never to deliver)
-- BRANCH HYGIENE (user directive 2026-09-03): `deliver/gsim-mt-dense-v1` is
-  FROZEN at 114fec0 (the deliverable tip). ALL experiment commits go to
-  `dev/mt-dense-experiments`. TIE/REJECT experiments: record evidence in the
-  ledger but DO NOT keep the knob code as new commits unless the user asks -
-  rejected code is complexity, the ledger is the preservation mechanism. A
-  candidate's code earns deliver only via user-directed merge.
+- BRANCH HYGIENE (updated 2026-09-06): `deliver/gsim-mt-dense-v1` is the
+  cleaned deliverable (ba67286: -3,888 lines of dead code/excised knobs, all
+  byte-identity-verified). ALL experiment commits go to
+  `dev/mt-dense-experiments` (cleanup merged in at 1022b84; champion-recipe
+  byte-identity vs newrtl-t16-compact-v3 verified post-merge). TIE/REJECT
+  experiments: record evidence in the ledger; knob code may stay on the
+  experiment branch as negative-evidence tooling (per-campaign convention),
+  never on deliver. A candidate's code earns deliver only via user-directed
+  merge.
 - Frozen FIR inputs (read-only): `../rtl-kunminghu-v3-frozen/SimTop.fir` (active
   RTL), `../rtl-v86-frozen/SimTop.fir`
-- Domain knowledge: `skills/mtwiki/wiki/` (esp. wiki-generator-speed.md 追记 1-9)
+- Domain knowledge: `skills/mtwiki/wiki/` (esp. wiki-generator-speed.md 追记 1-30)
 - Ledger append tool (USE THIS, never `cat >>`): `python3 scripts/ledger-append.py <ledger> '<json>'`
 - Evidence check (must pass before your round ends):
   `python3 scripts/check-evidence.py --workspace ../gsim-task-saturate-sparse --vocab-since 2026-08-20`
@@ -37,9 +40,44 @@ gsim ≤ V/2.5 measured in the SAME interleaved session.
 
 ## Attribution chain (2026-09-02, all measured — read the ledger tail)
 
-1. Event detection nets ZERO at T16 (static-dense probe, entry
+### 2026-09-06 CLOSURE (read first; supersedes the menu below)
+
+Champion perf attribution (lookahead config, flat sampling): the lookahead
+tail scan/dispatch = 72.9% of all samples; mtask bodies ~19-24%. The tail is
+coherence-transaction-bound (token publication invalidations; 24.5ns intra-CCD
+/ 290-322ns cross-CCD) - measured-proof stack: instruction reduction -25.4%
+flat wall (cursor probe) + memoized-fail -0.31% + MLP-4-wide scan +0.43% tie +
+sorted-waits -1.53% (captured) + padding +1.3% + batch-scan tie + arena tie +
+prefetch -0.57%. Chain fusion (WP3-class emission redesign) REJECTED +4.3%
+(LLVM spill mode in 64-mtask mega-functions). Four architecture proposals
+gate-killed cheaply (shared-kernel compaction 13.5%<20% + indirection; CCD
+cone replication structurally empty; transient-state arena 0.68%<<20%;
+two-cycle wavefront illegal by construction). Resegmentation killed
+arithmetically (release-share halving = 5.15% max < 7.41% floor for 8%).
+Astra (slow-role) ceiling verdict: **2.3-2.4x is the practical demonstrated
+endpoint for this workload/machine/architecture; no remaining evaluated
+mechanism offers a credible 8-10%.** Full evidence: ledger entries
+merge-deliver-cleanup... -> tail-scan-attribution-and-mlp-tie; wiki 追记补30;
+docs/astra-*.md in the ledger workspace.
+
+Any new round MUST name a mechanism not covered by the above closure, with a
+quantified budget, BEFORE emitting code.
+
+1. - Event detection nets ZERO at T16 (static-dense probe, entry
    static-dense-probe-tie-attribution-reversal): full evaluation ties the champion.
    WP2' shadow-memcmp surgery is DEAD. Activation/detection direction CLOSED.
+
+## Slow-role strategy consultation (gpt-6-astra, added 2026-09-06)
+
+The harness `slow` role maps to gpt-6-astra. Use it at route boundaries, not
+for code: (1) when choosing between directions, write a brief with MEASURED
+numbers (attribution, counters, latencies) and ask for ranked proposals with
+kill gates; (2) before funding any surgery, get its arithmetic ceiling check;
+(3) after a rejection, ask what the result rules out (mechanism elimination).
+Consult transcripts are preserved in `../gsim-task-saturate-sparse/docs/astra-*.md`
+and their outcomes in the ledger. Existing consults: astra-arch-proposals-r1
+(4 proposals, all gate-killed), astra-ceiling-verdict-r1 (ceiling sign-off),
+astra-tail-scan-r1 + astra-mlp-scan-r1 (tail mechanism).
 2. Time-based profile (perf stat): IPC 1.31, "67% cache miss" = L2→L3, not DRAM.
 3. Fill-source breakdown: DRAM only 2.1% of fills (NOT the wall); same-CCD L3 46%,
    cross-CCD L3 12% (priciest); single-CCD SMT = 3.1× worse (16 cores' MLP is
@@ -49,6 +87,10 @@ gsim ≤ V/2.5 measured in the SAME interleaved session.
    The token array's churn is a minor fraction of L3 fills.
 
 ## One round = exactly ONE hypothesis
+
+(WARNING 2026-09-06: every menu item below is now measured-closed - see the
+CLOSURE section above. The menu stays as the historical record of what was
+live on 2026-09-02.)
 
 1. Read the ledger tail. Pick ONE lever (unexplored or promising). The
    attribution says: wall = L3-latency x limited MLP. Candidate menu, ranked by
