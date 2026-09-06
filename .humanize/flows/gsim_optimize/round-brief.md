@@ -111,8 +111,9 @@ live on 2026-09-02.)
      layout change that shrinks the per-worker hot footprint.
    - v86/T32/T8 tiers: emission-stack transfer rules in wiki zhuiji 21-22
      apply (transfer emission knobs, re-sweep gamma/MAXMT/LA per design).
-   - T1-tier open question: event-vs-static at T1 serial UNMEASURED (T16 tie
-     does not transfer; needs a T1-width generation, watch width-match rule).
+   - T1-tier open question: event-vs-static at T1 serial MEASURED 2026-09-06
+     (entry t1-event-vs-static-tie): TIE at T1 too; dense-T1's slowness is
+     evaluation volume, not detection overhead.
 2. STATE OF PLAY (2026-09-02, read the ledger tail to confirm): champions are
    newrtl-t16-compact-v4 (kunminghu: MAXMT2000+LA1024+CCD250+SBO+sorted-waits =
    6.91-6.94s, 5/5 validated, seed sealed) and xiangshan-t16-compact-v4 (v86:
