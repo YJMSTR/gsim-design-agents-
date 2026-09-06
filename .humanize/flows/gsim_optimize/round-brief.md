@@ -42,23 +42,28 @@ gsim ≤ V/2.5 measured in the SAME interleaved session.
 
 ### 2026-09-06 CLOSURE (read first; supersedes the menu below)
 
-Champion perf attribution (lookahead config, flat sampling): the lookahead
-tail scan/dispatch = 72.9% of all samples; mtask bodies ~19-24%. The tail is
-coherence-transaction-bound (token publication invalidations; 24.5ns intra-CCD
-/ 290-322ns cross-CCD) - measured-proof stack: instruction reduction -25.4%
-flat wall (cursor probe) + memoized-fail -0.31% + MLP-4-wide scan +0.43% tie +
-sorted-waits -1.53% (captured) + padding +1.3% + batch-scan tie + arena tie +
-prefetch -0.57%. Chain fusion (WP3-class emission redesign) REJECTED +4.3%
-(LLVM spill mode in 64-mtask mega-functions). Four architecture proposals
-gate-killed cheaply (shared-kernel compaction 13.5%<20% + indirection; CCD
-cone replication structurally empty; transient-state arena 0.68%<<20%;
-two-cycle wavefront illegal by construction). Resegmentation killed
-arithmetically (release-share halving = 5.15% max < 7.41% floor for 8%).
-Astra (slow-role) ceiling verdict: **2.3-2.4x is the practical demonstrated
-endpoint for this workload/machine/architecture; no remaining evaluated
-mechanism offers a credible 8-10%.** Full evidence: ledger entries
-merge-deliver-cleanup... -> tail-scan-attribution-and-mlp-tie; wiki 追记补30;
-docs/astra-*.md in the ledger workspace.
+Champion perf attribution (lookahead config, flat sampling on the CLEAN
+registered binary; an earlier 72.9% tail figure was a TAIL_STATS
+global-atomic-counter artifact - see ledger
+correction-tail-attribution-instrumentation-artifact): tail scan ~41.6%,
+mtask bodies ~42.9%, pool ~4.5%. The tail is coherence-transaction-bound
+(token publication invalidations; 24.5ns intra-CCD / 290-322ns cross-CCD) -
+measured-proof stack: instruction reduction -25.4% flat wall (cursor probe) +
+memoized-fail -0.31% + MLP-4-wide scan +0.43% tie + sorted-waits -1.53%
+(captured) + padding +1.3% + batch-scan tie + arena tie + prefetch -0.57%.
+Bodies: text-streaming wall per wiki 追记28/29 (unique text, no shareable
+kernels - compaction gate-killed). Chain fusion (WP3-class emission redesign)
+REJECTED +4.3% (LLVM spill mode in 64-mtask mega-functions). Four
+architecture proposals gate-killed cheaply (shared-kernel compaction
+13.5%<20% + indirection; CCD cone replication structurally empty;
+transient-state arena 0.68%<<20%; two-cycle wavefront illegal by
+construction). Resegmentation killed arithmetically (release-share halving =
+5.15% max < 7.41% floor for 8%). Astra (slow-role) ceiling verdict:
+**2.3-2.4x is the practical demonstrated endpoint for this
+workload/machine/architecture; no remaining evaluated mechanism offers a
+credible 8-10%.** Full evidence: ledger through
+correction-tail-attribution-instrumentation-artifact; wiki 追记补30
+(corrected); docs/astra-*.md in the ledger workspace.
 
 Any new round MUST name a mechanism not covered by the above closure, with a
 quantified budget, BEFORE emitting code.
