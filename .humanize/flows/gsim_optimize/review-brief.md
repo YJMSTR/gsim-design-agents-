@@ -19,6 +19,12 @@ ledger and the repository are the record.
    pointers.
 4. **Correctness gates**: any entry claiming promotion must cite a HIT GOOD
    TRAP gate (pc=0x80001ca0, 663758 instr). Registration without gate = flag.
+4b. **Instrumentation hygiene (2026-09-06 artifact lesson)**: any timing OR
+   profiling attribution claim must come from a build WITHOUT hot-loop
+   instrumentation macros (e.g. GSIM_MT_DENSE_LOOKAHEAD_TAIL_STATS_COMPILE).
+   A TAIL_STATS-instrumented build read +603% on an A/B and inflated tail
+   samples ~1.75x in perf attribution (73% artifact vs true 41.6%). If an
+   entry's attribution cites an instrumented binary, flag it.
 5. **Boundary violations**: PGO/LTO anywhere, pushes to origin, frozen FIR
    edits — grep the round's diff/commands if the entry touches code.
 
