@@ -149,3 +149,5 @@ live on 2026-09-02.)
   with the numbers inside, update README + champion, then end.
 - If you believe the loop should stop for another reason: write `.humanize/flows/gsim_optimize/STOP`
   with one sentence why, then end.
+
+exp2 note (2026-09-07): experiment branch is now dev/mt-dense-exp2 (cut from deliver 0cae5d2, pushed). Old dev/mt-dense-experiments is frozen (its unique commits are rejected/tie knobs, preserved in history + ledger). Worktree: /tmp/gsim-exp2. Gate: /tmp/mrgopt/fir-gate-env.sh, base /tmp/gate-exp2-base-bin. astra r6 code-only lever list now fully exhausted (mapping killed at static discriminator this round: hub-dense communication, permutation only 50.0%->47.6% crossing).
