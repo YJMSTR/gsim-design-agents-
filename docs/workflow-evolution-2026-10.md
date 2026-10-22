@@ -29,3 +29,16 @@
 ## 时序
 
 R7/R8 落地后启动迭代-1(第一周基建,不动代理行为);第二周有界扫描 shakeout(现成试金石:R1 留下的 commw 二变体 cells)全自动闭环;两周期满按"省 >50% 编排消息且 verdict 质量不降"判成败。
+
+## 迭代-1 修订(2026-10-23,吸收外部对标 ~/test/gda-external-gap-analysis-20261023.md)
+
+外部结论:我方"测量诚实性"为全部对标对象(Humanize/RLCR、hmz、KDA、AlphaEvolve)最强;短板在"决策经济学"。裁决:
+
+1. **机制分提前进迭代-1**:scripts/mechanism-score.py(prediction vs 归因位移对账)——族冻结与归因签名档案的数据底座
+2. **niche-view.py**(~30 行,MAP-Elites 地板版):归因签名矩阵,round-brief 手工 CLOSURE 散文变查询(该散文已两次因归因更正重写)
+3. **每 5 轮战略对齐轮**(~30 行 bash,astra slow-role):补"reviewer 只查最后一条台账、无同族打转检测"盲区,不依赖迭代-1 其余项
+4. 判决宪法升级 sha256 校验+可审计("不可见"不可能,"不可改+可审计"可以)
+5. **C50000 长跑升 promote 门**+合法输入规约成文(唯一暴露过非原子写 bug 的探针,对标 KDA 压力探针)
+6. 族冻结+预算配额维持迭代-2(依赖机制分);task_class 观察
+
+一周落地三件:prediction 三字段+checker(kill_condition↔review-brief 打通)/每5轮对齐轮/niche-view.py。
